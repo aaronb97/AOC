@@ -7,7 +7,7 @@ function main(input: string, ...args: unknown[]) {
   const split = input.split("\n");
 
   for (const line of split) {
-    sum++;
+    console.log(line, ints(line));
   }
 
   return sum;

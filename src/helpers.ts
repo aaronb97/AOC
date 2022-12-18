@@ -2,12 +2,12 @@
  * Return all numbers in a string
  */
 export function ints(s: string) {
-  return s.match(/\d+/g).map((x) => Number(x));
+  return s.match(/\d+/g)?.map((x) => Number(x));
 }
 
 export function intersect(set1: Set<unknown>, set2: Set<unknown>) {
   const intersect = new Set();
-  for (const x of set1) {
+  for (const x of Array.from(set1)) {
     if (set2.has(x)) intersect.add(x);
   }
 
@@ -16,11 +16,11 @@ export function intersect(set1: Set<unknown>, set2: Set<unknown>) {
 
 export function union(set1: Set<unknown>, set2: Set<unknown>) {
   const union = new Set();
-  for (const x of set1) {
+  for (const x of Array.from(set1)) {
     union.add(x);
   }
 
-  for (const x of set2) {
+  for (const x of Array.from(set2)) {
     union.add(x);
   }
 
