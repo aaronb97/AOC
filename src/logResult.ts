@@ -1,4 +1,5 @@
-import fs from "fs";
+import * as fs from "fs";
+import { performance } from "perf_hooks";
 
 /**
  * Get the text input and resolve it as a string
