@@ -28,36 +28,75 @@ function part1(input: string) {
   let max = 0;
 
   const opened: Record<string, number> = {};
+  const visitedTimes: Record<string, number> = {};
 
-  const recurse = (node: string, step: number, prev: string | null) => {
-    console.log(step);
-    let nextStep = 1;
-    if (flows[node] && !opened[node]) {
-      opened[node] = step;
-      nextStep++;
-      prev = null;
+  const SCORE_STEPS = 30;
+  const STEPS = 30;
+
+  const calculateScore = () => {
+    let score = 0;
+    for (const key of Object.keys(opened)) {
+      const diff = SCORE_STEPS - opened[key];
+      score += diff * flows[key];
     }
 
-    if (
-      step >= 30 ||
-      Object.keys(flows).length === Object.keys(opened).length
-    ) {
-      console.log(step, opened);
+    return score;
+  };
+
+  const recurse = (node: string, step: number, prev: string | null) => {
+    if (step >= STEPS) return;
+
+    if (!visitedTimes[node]) visitedTimes[node] = 1;
+    else if (visitedTimes[node] <= 2) {
+      visitedTimes[node]++;
+    } else {
       return;
     }
 
+    if (step >= 5 && calculateScore() === 0) {
+      visitedTimes[node]--;
+      return;
+    }
+
+    if (
+      step >= STEPS - 1 ||
+      Object.keys(flows).length === Object.keys(opened).length
+    ) {
+      const score = calculateScore();
+      if (score > max) {
+        console.log(step, score, opened);
+        max = score;
+      }
+
+      // delete opened[node];
+      visitedTimes[node]--;
+      return;
+    }
+
+    if (flows[node] && !opened[node]) {
+      opened[node] = step;
+      for (const adj of graph[node]) {
+        recurse(adj, step + 2, null);
+      }
+
+      delete opened[node];
+    }
+
     for (const adj of graph[node]) {
-      if (prev !== null || adj !== prev) {
-        recurse(adj, nextStep + step, node);
+      if (prev !== node) {
+        recurse(adj, step + 1, node);
       }
     }
 
-    delete opened[node];
+    visitedTimes[node]--;
   };
 
-  return graph;
+  recurse("AA", 1, null);
+
+  return max;
 }
 
 export default function main() {
-  logResult("Test", __dirname + "/testInput.txt", part1);
+  // logResult("Test", __dirname + "/testInput.txt", part1);
+  logResult("Test", __dirname + "/input.txt", part1);
 }
