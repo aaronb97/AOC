@@ -4,7 +4,7 @@ import { logResult } from "../logResult";
 function part1(input: string) {
   const graph: Record<string, string[]> = {};
   const weightedGraph: Record<string, Record<string, number>> = {};
-  const flows: Record<string, number> = { AA: 0 };
+  const flows: Record<string, number> = {};
   const split = input.split("\n");
 
   for (const line of split) {
@@ -26,7 +26,7 @@ function part1(input: string) {
     graph[valves[0]] = group;
   }
 
-  for (const key of Object.keys(flows)) {
+  for (const key of Object.keys(flows).concat("AA")) {
     let steps = 1;
     const queue = [key];
     const visistedSet = new Set([key]);
@@ -120,7 +120,9 @@ function part1(input: string) {
 
     const weights = weightedGraph[node];
     for (const adj of Object.keys(weights)) {
-      recurse(adj, step + weights[adj], null);
+      if (adj !== prev) {
+        recurse(adj, step + weights[adj], node);
+      }
     }
 
     visitedTimes[node]--;
