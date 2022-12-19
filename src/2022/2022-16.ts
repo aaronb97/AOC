@@ -133,7 +133,121 @@ function part1(input: string) {
   return max;
 }
 
+function part2(input: string) {
+  const graph: Record<string, string[]> = {};
+  const weightedGraph: Record<string, Record<string, number>> = {};
+  const flows: Record<string, number> = {};
+  const split = input.split("\n");
+
+  for (const line of split) {
+    const valves = line.match(/[A-Z]{2}/g);
+    if (!valves) {
+      throw new Error("No valves found");
+    }
+
+    const flow = ints(line)[0];
+    const group = [];
+    for (let i = 1; i < valves.length; i++) {
+      group.push(valves[i]);
+    }
+
+    if (flow > 0) {
+      flows[valves[0]] = flow;
+    }
+
+    graph[valves[0]] = group;
+  }
+
+  const keys = Object.keys(flows).concat("AA");
+
+  for (const key of keys) {
+    let steps = 1;
+    const queue = [key];
+    const visistedSet = new Set([key]);
+
+    while (queue.length) {
+      const length = queue.length;
+
+      for (let i = 0; i < length; i++) {
+        const valve = queue.shift() as string;
+        if (!weightedGraph[key]) weightedGraph[valve] = {};
+
+        for (const adj of graph[valve]) {
+          if (!visistedSet.has(adj)) {
+            if (keys.includes(adj)) {
+              if (!weightedGraph[adj]) weightedGraph[adj] = {};
+
+              weightedGraph[key][adj] = steps + 1;
+              weightedGraph[adj][key] = steps + 1;
+            }
+
+            visistedSet.add(adj);
+            queue.push(adj);
+          }
+        }
+      }
+
+      steps++;
+    }
+  }
+
+  console.log(weightedGraph);
+
+  let max = 0;
+
+  const STEPS = 26;
+
+  const calculateScore = (arr: string[]) => {
+    let score = 0;
+    let steps = 0;
+    let i = 0;
+
+    while (i < arr.length - 1 && steps < STEPS) {
+      steps += weightedGraph[arr[i]][arr[i + 1]];
+      score += (STEPS - steps) * flows[arr[i + 1]];
+      i++;
+    }
+
+    return { score, steps };
+  };
+
+  const permutator = (inputArr: string[]) => {
+    const permute = (arr: string[], m: string[] = ["AA"]) => {
+      if (m.length > 4) {
+        for (let i = 2; i < m.length - 2; i++) {
+          const partition1 = m.slice(0, i);
+          const partition2 = m.slice(i);
+          const score1 = calculateScore(partition1);
+          const score2 = calculateScore(["AA"].concat(partition2));
+          const total = score1.score + score2.score;
+
+          if (total > max) {
+            max = total;
+            console.log(total, partition1, partition2);
+          }
+
+          if (score1.steps >= STEPS - 1 && score2.steps >= STEPS - 1) return;
+        }
+      }
+
+      for (let i = 0; i < arr.length; i++) {
+        let curr = arr.slice();
+        let next = curr.splice(i, 1);
+        permute(curr.slice(), m.concat(next));
+      }
+    };
+
+    permute(inputArr);
+  };
+
+  permutator(Object.keys(flows));
+
+  return max;
+}
+
 export default function main() {
   // logResult("Test", __dirname + "/testInput.txt", part1);
-  logResult("Test", __dirname + "/input.txt", part1);
+  // logResult("Test", __dirname + "/input.txt", part1);
+  // logResult("Test", __dirname + "/testInput.txt", part2);
+  logResult("Main", __dirname + "/input.txt", part2);
 }
