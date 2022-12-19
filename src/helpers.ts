@@ -1,8 +1,24 @@
 /**
  * Return all numbers in a string
  */
-export function ints(s: string) {
-  return s.match(/\d+/g)?.map((x) => Number(x));
+export function ints(str: string) {
+  let numbers = [];
+  let currentNumber = "";
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    if (/[0-9.-]/.test(char)) {
+      currentNumber += char;
+    } else {
+      if (currentNumber) {
+        numbers.push(parseFloat(currentNumber));
+      }
+      currentNumber = "";
+    }
+  }
+  if (currentNumber) {
+    numbers.push(parseFloat(currentNumber));
+  }
+  return numbers;
 }
 
 export function intersect(set1: Set<unknown>, set2: Set<unknown>) {
