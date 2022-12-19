@@ -1,17 +1,19 @@
-import { logResult } from "./logResult";
-import { ints } from "./helpers";
+const args = process.argv.slice(2);
 
-function main(input: string, ...args: unknown[]) {
-  console.log(args[0]);
-  let sum = 0;
-  const split = input.split("\n");
+const year =
+  args.find((x) => x.startsWith("y"))?.split("=")[1] ??
+  new Date().getFullYear();
 
-  for (const line of split) {
-    console.log(line, ints(line));
+const day =
+  args.find((x) => x.startsWith("d"))?.split("=")[1] ?? new Date().getDate();
+
+const main = async () => {
+  try {
+    const { default: aocMain } = await import(`./${year}/${year}-${day}`);
+    aocMain();
+  } catch {
+    console.error(`Unable to find file for year ${year} day ${day}`);
   }
+};
 
-  return sum;
-}
-
-logResult("Main", "inputs/input.txt", main, 1);
-logResult("Test", "inputs/testInput.txt", main);
+main();
