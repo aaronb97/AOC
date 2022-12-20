@@ -9,7 +9,9 @@ const day =
 
 const main = async () => {
   try {
-    const { default: aocMain } = await import(`./${year}/${year}-${day}`);
+    const { default: aocMain } = await import(
+      `./${year}-${day}/${year}-${day}`
+    );
     aocMain();
   } catch {
     console.error(`Unable to find file for year ${year} day ${day}`);
