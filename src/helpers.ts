@@ -6,7 +6,7 @@ export function ints(str: string) {
   let currentNumber = "";
   for (let i = 0; i < str.length; i++) {
     let char = str[i];
-    if (/[0-9.-]/.test(char)) {
+    if (/[0-9-]/.test(char)) {
       currentNumber += char;
     } else {
       if (currentNumber) {
