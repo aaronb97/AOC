@@ -37,8 +37,10 @@ function part2(input: string) {
     queue.push(...numObjs.map((obj) => obj));
   }
 
+  queue.reverse();
+
   while (queue.length) {
-    const e = queue.shift();
+    const e = queue.pop();
     if (!e) throw new Error("something happened");
 
     const index = numObjs.indexOf(e);
