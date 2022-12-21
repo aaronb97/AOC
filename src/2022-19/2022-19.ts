@@ -40,6 +40,22 @@ function part2(input: string) {
 type Rock = "ORE" | "CLAY" | "OBS" | "GEO";
 type Robot = Partial<Record<Rock, number>>;
 
+export function maxPossible(
+  step: number,
+  steps: number,
+  geodeCount: number,
+  geodeRobotCount: number
+) {
+  const diff = steps - step + 1;
+  let robots = geodeRobotCount;
+  for (let i = 0; i < diff; i++) {
+    geodeCount += robots;
+    robots++;
+  }
+
+  return geodeCount;
+}
+
 function processBlueprint(blueprint: number[], STEPS: number) {
   const robots: number[][] = [
     [blueprint[0], 0, 0, 0],
@@ -50,53 +66,76 @@ function processBlueprint(blueprint: number[], STEPS: number) {
 
   let max = 0;
 
-  const memo: Record<string, number> = {};
+  const memo: Record<string, number[]> = {};
 
-  const toKey = (rockCounts: number[], robotCounts: number[], step: number) => {
-    return `${rockCounts.join(",")},${robotCounts.join(",")},${step}`;
+  const processMemo = (
+    rockCounts: number[],
+    robotCounts: number[],
+    step: number
+  ) => {
+    const key = `${robotCounts.join()},${step}`;
+    const lookup = memo[key];
+    if (lookup) {
+      for (let i = 0; i < 4; i++) {
+        if (rockCounts[i] > lookup[i]) {
+          return false;
+        }
+      }
+
+      for (let i = 0; i < 4; i++) {
+        lookup[i] = rockCounts[i];
+      }
+
+      return true;
+    } else {
+      memo[key] = [...rockCounts];
+      return false;
+    }
   };
 
-  function maxPossible(
-    step: number,
-    geodeCount: number,
-    geodeRobotCount: number
-  ) {
-    const diff = STEPS - step + 1;
-    let robots = geodeRobotCount;
-    for (let i = 0; i < diff; i++) {
-      geodeCount += robots;
-      robots++;
-    }
-
-    return geodeCount;
-  }
+  // const toKey = (rockCounts: number[], robotCounts: number[], step: number) => {
+  //   return `${rockCounts.join(",")},${robotCounts.join(",")},${step}`;
+  // };
 
   const recurse = (
     rockCounts: number[],
     robotCounts: number[],
     step: number
-  ): number => {
-    if (rockCounts.some((x) => x > 50)) return 0;
-
-    // console.log(rockCounts, robotCounts, step);
-    const key = toKey(rockCounts, robotCounts, step);
-    const lookup = memo[key];
-    if (lookup !== undefined) {
-      return lookup;
+  ) => {
+    // console.log(memo);
+    if (processMemo(rockCounts, robotCounts, step)) {
+      return;
     }
 
-    if (maxPossible(step, rockCounts[3], robotCounts[3]) < max) {
-      memo[key] = 0;
+    const testArray = [rockCounts[0], rockCounts[1], rockCounts[2]];
+    if (
+      testArray.some((x) => x > 20) &&
+      testArray.filter((x) => x === 0).length === 2
+    ) {
       return 0;
     }
 
+    if (step > 5 && robotCounts.every((x) => x === 0)) return;
+
+    if (rockCounts[3] > max) {
+      max = rockCounts[3];
+      console.log(max);
+    }
+
+    // console.log(rockCounts, robotCounts, step);
+
     if (rockCounts[3] + robotCounts[3] * (STEPS - step + 1) > max) {
       max = rockCounts[3] + robotCounts[3] * (STEPS - step + 1);
+      console.log(max);
     }
-    if (step > STEPS) return rockCounts[3];
 
-    let results = [];
-    let keys = [];
+    if (maxPossible(step, STEPS, rockCounts[3], robotCounts[3]) <= max) {
+      return 0;
+    }
+
+    if (step > STEPS) {
+      return max;
+    }
 
     // if (max - rockCounts[3] > STEPS - step) return;
 
@@ -110,22 +149,17 @@ function processBlueprint(blueprint: number[], STEPS: number) {
           subtractedRockCounts
         ); //use old robot counts
 
-        const result = recurse(newRockCounts, newRobotCounts, step + 1);
-        results.push(result);
-        keys.push(key);
+        recurse(newRockCounts, newRobotCounts, step + 1);
       }
     }
 
     const newRockCounts = incrementRockCounts(robotCounts, rockCounts);
-    results.push(recurse(newRockCounts, [...robotCounts], step + 1));
-    keys.push(toKey(newRockCounts, robotCounts, step));
+    recurse(newRockCounts, [...robotCounts], step + 1);
 
-    const maxResult = Math.max(...results);
-    for (const k of keys) {
-      memo[k] = maxResult;
-    }
-
-    return maxResult;
+    // const maxResult = Math.max(...results);
+    // for (const k of keys) {
+    //   memo[k] = maxResult;
+    // }
   };
 
   recurse([0, 0, 0, 0], [1, 0, 0, 0], 1);
@@ -168,33 +202,11 @@ function incrementRockCounts(robotCounts: number[], rockCounts: number[]) {
 }
 
 export default function main() {
-  //   logResult("Test", __dirname + "/testInput.txt", part1);
+  // logResult("Test", __dirname + "/testInput.txt", part1);
   // logResult("Test", __dirname + "/testInput.txt", part2);
-  logResult("Main", __dirname + "/input.txt", part1);
+  logResult("Test", __dirname + "/input.txt", part2);
+  // logResult("Main", __dirname + "/input.txt", part1);
 }
 
-// Blueprint 1: 5
-// Blueprint 2: 0
-// Blueprint 3: 2
-// Blueprint 4: 10
-// Blueprint 5: 3
-// Blueprint 6: 6
-// Blueprint 7: 0
-// Blueprint 8: 11
-// Blueprint 9: 3
-// Blueprint 10: 8
-// Blueprint 11: 1
-// Blueprint 12: 0
-// Blueprint 13: 1
-// Blueprint 14: 0
-// Blueprint 15: 15
-// Blueprint 16: 0
-// Blueprint 17: 0
-// Blueprint 18: 12
-// Blueprint 19: 0
-// Blueprint 20: 2
-// Blueprint 21: 1
-// Blueprint 22: 0
-// Blueprint 23: 3
-// Blueprint 24: 14
-// Blueprint 25: 1
+// 12096
+// 13440
