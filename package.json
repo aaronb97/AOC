@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "tsnd --respawn --transpile-only --clear src/index.ts",
+    "generate": "tsnd src/generate.ts",
     "test": "jest --watch"
   },
   "dependencies": {
