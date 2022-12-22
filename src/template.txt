@@ -2,6 +2,7 @@ import { ints } from "../helpers";
 import { logResult } from "../logResult";
 
 function part1(input: string) {
+  const split = input.split("\n");
   return ints(input);
 }
 
