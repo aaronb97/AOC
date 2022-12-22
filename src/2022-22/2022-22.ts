@@ -105,12 +105,12 @@ export function nextCoords(
 
   //2 to 5
   if (pos[X] === 149 && inRange(pos[Y], 0, 49) && dir === RIGHT) {
-    return [[99, 150 - pos[Y]], LEFT];
+    return [[99, 150 - pos[Y] - 1], LEFT];
   }
 
   //5 to 2
   if (pos[X] === 99 && inRange(pos[Y], 100, 149) && dir === RIGHT) {
-    return [[149, 150 - pos[Y]], LEFT];
+    return [[149, 150 - pos[Y] - 1], LEFT];
   }
 
   //4 to 3
@@ -155,12 +155,12 @@ export function nextCoords(
 
   //1 to 4
   if (pos[X] === 50 && inRange(pos[Y], 0, 49) && dir === LEFT) {
-    return [[0, 150 - pos[Y]], RIGHT];
+    return [[0, 150 - pos[Y] - 1], RIGHT];
   }
 
   //4 to 1
   if (pos[X] === 0 && inRange(pos[Y], 100, 149) && dir === LEFT) {
-    return [[50, 150 - pos[Y]], RIGHT];
+    return [[50, 150 - pos[Y] - 1], RIGHT];
   }
 
   return [[pos[X] + dirs[dir][X], pos[Y] + dirs[dir][Y]], dir];
