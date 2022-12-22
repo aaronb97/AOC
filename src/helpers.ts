@@ -112,4 +112,8 @@ export function sum(arr: number[]) {
   return arr.reduce((total, current) => total + current, 0);
 }
 
+export function last<T>(arr: T[]) {
+  return arr[arr.length - 1];
+}
+
 //TODO: add more helpers
