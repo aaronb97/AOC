@@ -1,4 +1,4 @@
-import { ints, last } from "../helpers";
+import { ints, last, mod } from "../helpers";
 import { logResult } from "../logResult";
 
 const X = 0,
@@ -10,9 +10,9 @@ function part1(input: string) {
   let dirP = 0;
   const dirs = [
     [1, 0],
-    [0, -1],
-    [-1, 0],
     [0, 1],
+    [-1, 0],
+    [0, -1],
   ];
 
   const grid: string[][] = [];
@@ -29,7 +29,7 @@ function part1(input: string) {
     const dir = dirs[dirP];
 
     const coords = [pos[X] + dir[X], pos[Y] + dir[Y]];
-    const next = grid[coords[X]]?.[coords[Y]];
+    const next = grid[coords[Y]]?.[coords[X]];
     if (next === ".") {
       return coords;
     }
@@ -41,14 +41,14 @@ function part1(input: string) {
     const backCoords = [pos[X], pos[Y]];
     while (
       ![undefined, " "].includes(
-        grid[backCoords[X] - dir[X]]?.[backCoords[Y] - dir[Y]]
+        grid[backCoords[Y] - dir[Y]]?.[backCoords[X] - dir[X]]
       )
     ) {
       backCoords[X] -= dir[X];
       backCoords[Y] -= dir[Y];
     }
 
-    if (grid[backCoords[X]][backCoords[Y]] === "#") return false;
+    if (grid[backCoords[Y]][backCoords[X]] === "#") return false;
 
     return backCoords;
   }
@@ -74,20 +74,20 @@ function part1(input: string) {
       dirP--;
     }
 
-    dirP = dirP % 4;
+    dirP = mod(dirP, 4);
     i++;
   }
 
   move(last(moves));
 
-  return (pos[X] + 1) * 1000 + (pos[Y] + 1) * 4 + dirP;
+  return (pos[Y] + 1) * 1000 + (pos[X] + 1) * 4 + dirP;
 }
 
 function part2(input: string) {}
 
 export default function main() {
   logResult("Test", __dirname + "/testInput.txt", part1);
-  // logResult("Main", __dirname + "/input.txt", part1);
+  logResult("Main", __dirname + "/input.txt", part1);
   //   logResult("Main", __dirname + "/testInput.txt", part2);
   //   logResult("Test", __dirname + "/input.txt", part2);
 }
