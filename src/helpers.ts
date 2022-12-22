@@ -100,6 +100,10 @@ export function range(x: number, y: number): number[] {
   return arr;
 }
 
+export function inRange(test: number, low: number, high: number) {
+  return test >= low && test <= high;
+}
+
 export function swap<T>(x: T, y: T): [T, T] {
   return [y, x];
 }
