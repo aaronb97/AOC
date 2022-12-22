@@ -116,4 +116,9 @@ export function last<T>(arr: T[]) {
   return arr[arr.length - 1];
 }
 
+export function mod(n: number, m: number) {
+  const remain = n % m;
+  return Math.floor(remain >= 0 ? remain : remain + m);
+}
+
 //TODO: add more helpers
