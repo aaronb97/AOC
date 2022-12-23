@@ -9,11 +9,11 @@ test("2 to 3", () => {
 });
 
 test("2 to 5", () => {
-  expect(nextCoords([149, 20], RIGHT)).toStrictEqual([[99, 130], LEFT]);
+  expect(nextCoords([149, 20], RIGHT)).toStrictEqual([[99, 129], LEFT]);
 });
 
 test("5 to 2", () => {
-  expect(nextCoords([99, 130], RIGHT)).toStrictEqual([[149, 20], LEFT]);
+  expect(nextCoords([99, 130], RIGHT)).toStrictEqual([[149, 19], LEFT]);
 });
 
 test("4 to 3", () => {
@@ -49,11 +49,11 @@ test("2 to 6", () => {
 });
 
 test("1 to 4", () => {
-  expect(nextCoords([50, 10], LEFT)).toStrictEqual([[0, 140], RIGHT]);
+  expect(nextCoords([50, 10], LEFT)).toStrictEqual([[0, 139], RIGHT]);
 });
 
 test("4 to 1", () => {
-  expect(nextCoords([0, 140], LEFT)).toStrictEqual([[50, 10], RIGHT]);
+  expect(nextCoords([0, 140], LEFT)).toStrictEqual([[50, 9], RIGHT]);
 });
 
 test("base case 1", () => {
