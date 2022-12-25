@@ -117,7 +117,11 @@ export function sum(arr: number[]) {
 }
 
 export function last<T>(arr: T[]) {
-  return arr[arr.length - 1];
+  if (arr.length === 0) {
+    throw new Error("Cannot get last element of empty array");
+  }
+
+  return arr[arr.length - 1] as T;
 }
 
 export function mod(n: number, m: number) {
