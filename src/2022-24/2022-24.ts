@@ -198,11 +198,97 @@ function part1(input: string) {
   }
 }
 
-function part2(input: string) {}
+function calculate(
+  split: string[],
+  initialGrid?: Grid,
+  shouldSwitch?: boolean
+) {
+  const queue = !shouldSwitch
+    ? [[1, 0]]
+    : [[last(split).indexOf("."), split.length]];
+  const end = !shouldSwitch ? [last(split).indexOf("."), split.length] : [1, 0];
+  const height = split.length,
+    width = split[0].trim()!.length;
+
+  const loopMod = (height - 2) * (width - 2);
+  const visitedSet = new Set();
+  let grid: Grid = {};
+
+  if (initialGrid) {
+    grid = initialGrid;
+  } else {
+    for (let i = 0; i < split.length; i++) {
+      const line = split[i] as string;
+      for (let j = 0; j < line.length; j++) {
+        const char = line[j] as string;
+        const key = charToKey(char);
+        if (key) {
+          if (!grid[toKey(j, i)]) {
+            grid[toKey(j, i)] = {};
+          }
+
+          grid[toKey(j, i)]![key] = true;
+        } else {
+          grid[toKey(j, i)] = {};
+        }
+      }
+    }
+  }
+
+  let loop = 0;
+
+  // printGrid(grid, width, height);
+
+  while (true) {
+    const length = queue.length;
+    grid = processGrid(grid, height, width);
+
+    for (let i = 0; i < length; i++) {
+      const el = queue.shift() as number[];
+
+      const loopKey = toLoopKey(loop % loopMod, el[X], el[Y]);
+      if (visitedSet.has(loopKey)) {
+        continue;
+      } else {
+        visitedSet.add(loopKey);
+      }
+
+      for (const dir of dirs) {
+        const newEl = [el[X] + dir[X], el[Y] + dir[Y]];
+        if (newEl[X] === end[X] && newEl[Y] === end[Y]) return { loop, grid };
+
+        if (
+          inRange(newEl[X], 0, width - 1) &&
+          inRange(newEl[Y], 0, height - 1) &&
+          !Object.values(grid[toKey(newEl[X], newEl[Y])]).some(
+            (x) => x === true
+          )
+        ) {
+          queue.push(newEl);
+        }
+      }
+    }
+
+    loop++;
+
+    // printGrid(grid, width, height);
+  }
+}
+
+function part2(input: string) {
+  const split = input.split("\n");
+  const { grid: gridPart1, loop: loopPart1 } = calculate(split);
+  const { grid: gridPart2, loop: loopPart2 } = calculate(
+    split,
+    gridPart1,
+    true
+  );
+  return calculate(split, gridPart2).loop + loopPart1 + loopPart2 + 2;
+}
 
 export default function main() {
   // logResult("Test", __dirname + "/testInput2.txt", part1);
-  logResult("Main", __dirname + "/input.txt", part1);
-  //   logResult("Main", __dirname + "/testInput.txt", part2);
+  logResult("Main", __dirname + "/input.txt", part2);
+  // logResult("Main", __dirname + "/testInput.txt", part2);
   //   logResult("Test", __dirname + "/input.txt", part2);
 }
