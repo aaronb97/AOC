@@ -129,4 +129,17 @@ export function mod(n: number, m: number) {
   return Math.floor(remain >= 0 ? remain : remain + m);
 }
 
+export const invertRecord = (
+  record: Record<string, any>
+): Record<any, string> => {
+  return Object.entries(record).reduce((acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  }, {} as Record<any, string>);
+};
+
+export const removeFromArray = <T>(array: T[], el: T) => {
+  array.splice(array.indexOf(el), 1);
+};
+
 //TODO: add more helpers
