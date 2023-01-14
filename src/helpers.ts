@@ -86,6 +86,14 @@ export function createGrid<T>(x: number, y?: number, value?: T): T[][] {
   return grid;
 }
 
+export function stringTo2DArray<T = string>(
+  str: string,
+  transformer: (c: string) => T = (c) => c as T
+): T[][] {
+  const rows = str.split("\n");
+  return rows.map((row) => row.split("").map(transformer));
+}
+
 export function range(x: number, y: number): number[] {
   const arr: number[] = [];
   if (y >= x) {
@@ -141,5 +149,12 @@ export const invertRecord = (
 export const removeFromArray = <T>(array: T[], el: T) => {
   array.splice(array.indexOf(el), 1);
 };
+
+export const DIRS = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+];
 
 //TODO: add more helpers
