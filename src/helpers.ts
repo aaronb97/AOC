@@ -150,6 +150,10 @@ export const removeFromArray = <T>(array: T[], el: T) => {
   array.splice(array.indexOf(el), 1);
 };
 
+export function isLowerCase(s: string) {
+  return s.toLowerCase() === s;
+}
+
 export const DIRS = [
   [1, 0],
   [-1, 0],
