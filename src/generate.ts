@@ -1,13 +1,8 @@
 import * as fs from "fs";
+import { getDay, getYear } from "./scriptHelpers";
 
-const args = process.argv.slice(2);
-
-const year =
-  args.find((x) => x.startsWith("y"))?.split("=")[1] ??
-  new Date().getFullYear();
-
-const day =
-  args.find((x) => x.startsWith("d"))?.split("=")[1] ?? new Date().getDate();
+const year = getYear();
+const day = getDay();
 
 const main = async () => {
   if (day > 25) throw new Error(day + " Not a valid advent of code day");

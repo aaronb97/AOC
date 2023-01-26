@@ -1,11 +1,7 @@
-const args = process.argv.slice(2);
+import { getDay, getYear } from "./scriptHelpers";
 
-const year =
-  args.find((x) => x.startsWith("y"))?.split("=")[1] ??
-  new Date().getFullYear();
-
-const day =
-  args.find((x) => x.startsWith("d"))?.split("=")[1] ?? new Date().getDate();
+const year = getYear();
+const day = getDay();
 
 const main = async () => {
   try {
