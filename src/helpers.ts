@@ -21,6 +21,10 @@ export function ints(str: string) {
   return numbers;
 }
 
+export function singleInts(str: string) {
+  return str.match(/\d/g)?.map(Number);
+}
+
 export function intersect(set1: Set<unknown>, set2: Set<unknown>) {
   const intersect = new Set();
   for (const x of Array.from(set1)) {
