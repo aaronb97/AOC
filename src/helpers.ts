@@ -21,6 +21,10 @@ export function ints(str: string) {
   return numbers;
 }
 
+export function isNumber(str: string) {
+  return !isNaN(Number(str));
+}
+
 export function singleInts(str: string) {
   return str.match(/\d/g)?.map(Number);
 }
