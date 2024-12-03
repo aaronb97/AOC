@@ -18,5 +18,5 @@ export function getDay() {
     return new Date().getDate();
   }
 
-  return arg.split("=")[1];
+  return Number(arg.split("=")[1]);
 }
