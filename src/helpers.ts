@@ -169,6 +169,13 @@ export const DIRS = [
   [0, -1],
 ];
 
-export const DIAG_DIRS = [...DIRS, [1, 1], [-1, -1], [-1, 1], [1, -1]];
+export const DIAG_DIRS_ONLY = [
+  [1, 1],
+  [-1, -1],
+  [-1, 1],
+  [1, -1],
+];
+
+export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
 //TODO: add more helpers
