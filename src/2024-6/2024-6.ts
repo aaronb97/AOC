@@ -55,6 +55,45 @@ function part1(input: string) {
 function part2(input: string) {
   const grid = stringTo2DArray(input);
 
+  function getVisitedSet() {
+    const start = findStart();
+
+    let currentDir = 0;
+    const visitedSet = new Set<string>();
+
+    const dirs = [
+      [-1, 0],
+      [0, 1],
+      [1, 0],
+      [0, -1],
+    ];
+
+    let coords = start;
+
+    while (true) {
+      visitedSet.add(`${coords[0]},${coords[1]}`);
+
+      const nextCoords = [
+        coords[0] + dirs[currentDir][0],
+        coords[1] + dirs[currentDir][1],
+      ];
+
+      const next = grid[nextCoords[0]]?.[nextCoords[1]];
+
+      if (next === undefined) {
+        return visitedSet;
+      }
+
+      if (next === "#") {
+        currentDir = (currentDir + 1) % 4;
+      } else {
+        coords = nextCoords;
+      }
+    }
+  }
+
+  const visitedSet = getVisitedSet();
+
   function findStart() {
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[0].length; j++) {
@@ -113,6 +152,7 @@ function part2(input: string) {
   }
 
   function tryTraverse(i: number, j: number) {
+    if (!visitedSet.has(`${i},${j}`)) return false;
     if (grid[i][j] !== ".") return false;
 
     grid[i][j] = "#";
