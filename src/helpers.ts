@@ -251,4 +251,19 @@ export function computer(nums: number[], input1?: number, input2?: number) {
   return nums[0];
 }
 
+export function getCounts<T>(array: T[]): Record<string | number, number> {
+  const result: Record<string | number, number> = {};
+
+  for (const item of array) {
+    const key = typeof item === "number" ? item : String(item);
+    if (result[key]) {
+      result[key]++;
+    } else {
+      result[key] = 1;
+    }
+  }
+
+  return result;
+}
+
 //TODO: add more helpers
