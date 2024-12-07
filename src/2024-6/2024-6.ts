@@ -1,7 +1,7 @@
 import { ints, stringTo2DArray } from "../helpers";
 import { logResult } from "../logResult";
 
-function part1(input: string) {
+export function part1(input: string) {
   const grid = stringTo2DArray(input);
 
   function findStart() {
@@ -52,7 +52,7 @@ function part1(input: string) {
   }
 }
 
-function part2(input: string) {
+export function part2(input: string) {
   const grid = stringTo2DArray(input);
 
   function getVisitedSet() {
@@ -178,11 +178,4 @@ function part2(input: string) {
   }
 
   return blocks;
-}
-
-export default function main() {
-  // logResult("Test part 1", __dirname + "/testInput.txt", part1);
-  // logResult("Main part 1", __dirname + "/input.txt", part1);
-  logResult("Test part 2", __dirname + "/testInput.txt", part2);
-  logResult("Main part 2", __dirname + "/input.txt", part2);
 }

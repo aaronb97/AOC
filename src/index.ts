@@ -50,13 +50,6 @@ async function main() {
     const module = await import(`./${year}-${day}/${year}-${day}`);
     part1 = module.part1;
     part2 = module.part2;
-
-    if (!part1 || !part2) {
-      console.error(
-        `Unable to find part1 or part2 in file for year ${year} day ${day}`
-      );
-      return;
-    }
   } catch {
     console.error(`Unable to find file for year ${year} day ${day}`);
     return;
@@ -65,6 +58,13 @@ async function main() {
   // Determine which function to run
   const chosenPartFn = partValue === "1" ? part1 : part2;
   const partLabel = partValue === "1" ? "Part 1" : "Part 2";
+
+  if (!chosenPartFn) {
+    console.error(
+      `Part ${partValue} not found in ${year}-${day}. Is your function exported?`
+    );
+    return;
+  }
 
   // Run the chosen part on each specified file
   files.forEach((fileName) => {
