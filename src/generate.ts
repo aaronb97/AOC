@@ -37,7 +37,10 @@ const main = async () => {
 
   // Only create the solution file if it doesn't exist
   if (!fs.existsSync(solutionFile)) {
-    fs.writeFileSync(solutionFile, template);
+    fs.writeFileSync(
+      solutionFile,
+      `//https://adventofcode.com/${year}/day/${day}\n` + template
+    );
   } else {
     console.log("Solution file already exists, skipping creation.");
   }
@@ -86,7 +89,8 @@ const main = async () => {
   rl.question(
     `Do you want to set AOC_DAY=${day} and AOC_YEAR=${year} in .env? (y/n) `,
     (answer) => {
-      if (answer.toLowerCase() === "y") {
+      //y or enter
+      if (answer.toLowerCase() === "y" || answer === "") {
         const envPath = path.join(__dirname, "..", ".env");
         let envFileContent = "";
         if (fs.existsSync(envPath)) {

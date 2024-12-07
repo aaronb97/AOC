@@ -1,3 +1,4 @@
+//Visit the problem: https://adventofcode.com/2019/day/1
 import { ints } from "../helpers";
 
 export function part1(input: string) {
