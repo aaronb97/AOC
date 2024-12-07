@@ -37,7 +37,7 @@ function part2(input: string) {
   let sum = 0;
   for (const line of split) {
     const [target, ...nums] = ints(line);
-    if (isValid(target, nums[0], nums.slice(1))) {
+    if (isValid(target, nums)) {
       sum += target;
       // console.log("valid", nums);
     } else {
@@ -45,18 +45,32 @@ function part2(input: string) {
     }
   }
 
-  function isValid(target: number, sum: number, nums: number[]): boolean {
-    if (sum > target) return false;
+  function isValid(target: number, nums: number[]): boolean {
+    if (target < 1) return false;
 
-    if (nums.length === 0) {
-      return sum === target;
+    if (nums.length === 1) {
+      return nums[0] === target;
     }
 
-    return (
-      isValid(target, sum + nums[0], nums.slice(1)) ||
-      isValid(target, sum * nums[0], nums.slice(1)) ||
-      isValid(target, Number(`${sum}${nums[0]}`), nums.slice(1))
-    );
+    const sliced = nums.slice(0, nums.length - 1);
+
+    const found =
+      isValid(target / last(nums), sliced) ||
+      isValid(target - last(nums), sliced);
+
+    if (!found) {
+      const targetString = target.toString();
+      const numString = last(nums).toString();
+      if (targetString.endsWith(numString)) {
+        const nextNum = Number(targetString.slice(0, -numString.length));
+
+        return isValid(nextNum, sliced);
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   return sum;
