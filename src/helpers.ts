@@ -78,6 +78,12 @@ export function logObject(...objs: unknown[]) {
   console.log(...objs.map((obj) => JSON.parse(JSON.stringify(obj))));
 }
 
+export function printGrid(grid: unknown[][]) {
+  console.log("\n");
+  console.log(grid.map((row) => row.join("")).join("\n"));
+  console.log("\n");
+}
+
 export function createGrid<T>(x: number, y?: number, value?: T): T[][] {
   if (y === undefined) y = x;
 
@@ -160,6 +166,40 @@ export const removeFromArray = <T>(array: T[], el: T) => {
 
 export function isLowerCase(s: string) {
   return s.toLowerCase() === s;
+}
+
+export function getPermutations<T>(arr: T[]): T[][] {
+  const result: T[][] = [];
+
+  function permute(prefix: T[], remaining: T[]): void {
+    if (remaining.length === 0) {
+      result.push(prefix);
+      return;
+    }
+
+    for (let i = 0; i < remaining.length; i++) {
+      const chosen = remaining[i];
+      const newRemaining = [
+        ...remaining.slice(0, i),
+        ...remaining.slice(i + 1),
+      ];
+      permute([...prefix, chosen], newRemaining);
+    }
+  }
+
+  permute([], arr);
+
+  return result;
+}
+
+export function splitArrayAtIndex<T>(arr: T[], index: number): [T[], T[]] {
+  if (index < 0 || index > arr.length) {
+    throw new Error("Index out of bounds");
+  }
+
+  const left = arr.slice(0, index);
+  const right = arr.slice(index);
+  return [left, right];
 }
 
 export const DIRS = [
