@@ -222,4 +222,33 @@ export const DIAG_DIRS_ONLY = [
 
 export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
+export function computer(nums: number[], input1?: number, input2?: number) {
+  nums = [...nums];
+  if (input1) {
+    nums[1] = input1;
+  }
+
+  if (input2) {
+    nums[2] = input2;
+  }
+
+  for (let i = 0; i < nums.length; i += 4) {
+    const num1 = nums[nums[i + 1]];
+    const num2 = nums[nums[i + 2]];
+    const storeIndex = nums[i + 3];
+
+    if (nums[i] === 1) {
+      nums[storeIndex] = num1 + num2;
+    } else if (nums[i] === 2) {
+      nums[storeIndex] = num1 * num2;
+    } else if (nums[i] === 99) {
+      break;
+    } else {
+      return -1;
+    }
+  }
+
+  return nums[0];
+}
+
 //TODO: add more helpers

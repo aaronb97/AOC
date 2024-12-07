@@ -72,8 +72,8 @@ async function main() {
 
     let history: any[] = [];
 
-    function visualize(toVisualize: string) {
-      history.push(toVisualize);
+    function visualize(toVisualize: unknown) {
+      history.push(JSON.parse(JSON.stringify(toVisualize)));
     }
 
     await logResult(

@@ -1,4 +1,4 @@
-import { intersect, ints, splitIndex } from "./helpers";
+import { computer, intersect, ints, splitIndex } from "./helpers";
 
 describe("ints", () => {
   it("should return ints in a string", () => {
@@ -19,5 +19,11 @@ describe("intersect", () => {
 describe("splitIndex", () => {
   it("should split a string at a given index", () => {
     expect(splitIndex("abcdef", 4)).toStrictEqual(["abcd", "ef"]);
+  });
+});
+
+describe("computer", () => {
+  it("1", () => {
+    expect(computer(ints("1,9,10,3,2,3,11,0,99,30,40,50"))).toBe(3500);
   });
 });
