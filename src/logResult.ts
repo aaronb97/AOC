@@ -22,8 +22,8 @@ export function logResult(
   path: string,
   cb: (input: string, ...args: unknown[]) => unknown,
   ...args: unknown[]
-) {
-  processFile(path).then((res) => {
+): Promise<void> {
+  return processFile(path).then((res) => {
     const time1 = performance.now();
     const result = cb(res, ...args);
     const time2 = performance.now();

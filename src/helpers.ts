@@ -78,6 +78,10 @@ export function logObject(...objs: unknown[]) {
   console.log(...objs.map((obj) => JSON.parse(JSON.stringify(obj))));
 }
 
+export function gridToString(grid: unknown[][]) {
+  return grid.map((row) => row.join("")).join("\n");
+}
+
 export function printGrid(grid: unknown[][]) {
   console.log("\n");
   console.log(grid.map((row) => row.join("")).join("\n"));
