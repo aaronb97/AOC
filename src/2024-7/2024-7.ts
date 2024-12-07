@@ -1,7 +1,6 @@
 import { getPermutations, ints, last, splitArrayAtIndex } from "../helpers";
-import { logResult } from "../logResult";
 
-function part1(input: string) {
+export function part1(input: string) {
   const split = input.split("\n");
 
   let sum = 0;
@@ -31,7 +30,7 @@ function part1(input: string) {
   return sum;
 }
 
-function part2(input: string) {
+export function part2(input: string) {
   const split = input.split("\n");
 
   let sum = 0;
@@ -79,11 +78,4 @@ function part2(input: string) {
   }
 
   return sum;
-}
-
-export default function main() {
-  // logResult("Test part 1", __dirname + "/testInput.txt", part1);
-  // logResult("Main part 1", __dirname + "/input.txt", part1);
-  logResult("Test part 2", __dirname + "/testInput.txt", part2);
-  logResult("Main part 2", __dirname + "/input.txt", part2);
 }
