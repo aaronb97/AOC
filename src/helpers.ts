@@ -226,20 +226,23 @@ interface Params {
   p1: number;
   p2: number;
   p3: number;
+  input: number;
 }
 
 function executeOpcode(
   opCode: number,
   nums: number[],
   index: number,
-  { p1, p2, p3 }: Params
+  { p1, p2, p3, input }: Params
 ): { index: number; output?: string | number; detail?: string } {
+  // ADD
   if (opCode === 1) {
     nums[p3] = nums[p1] + nums[p2];
 
     return { index: index + 4 };
   }
 
+  // MULTIPLY
   if (opCode === 2) {
     nums[p3] = nums[p1] * nums[p2];
 
@@ -247,13 +250,54 @@ function executeOpcode(
   }
 
   if (opCode === 3) {
-    nums[p1] = 1;
+    nums[p1] = input;
 
     return { index: index + 2 };
   }
 
+  // PRINT
   if (opCode === 4) {
     return { index: index + 2, output: nums[p1] };
+  }
+
+  // JUMP IF TRUE
+  if (opCode === 5) {
+    if (nums[p1] !== 0) {
+      return { index: nums[p2] };
+    } else {
+      return { index: index + 3 };
+    }
+  }
+
+  // JUMP IF FALSE
+  if (opCode === 6) {
+    if (nums[p1] === 0) {
+      return { index: nums[p2] };
+    } else {
+      return { index: index + 3 };
+    }
+  }
+
+  // LESS THAN
+  if (opCode === 7) {
+    if (nums[p1] < nums[p2]) {
+      nums[p3] = 1;
+    } else {
+      nums[p3] = 0;
+    }
+
+    return { index: index + 4 };
+  }
+
+  // EQUALS
+  if (opCode === 8) {
+    if (nums[p1] === nums[p2]) {
+      nums[p3] = 1;
+    } else {
+      nums[p3] = 0;
+    }
+
+    return { index: index + 4 };
   }
 
   if (opCode === 99) {
@@ -267,26 +311,31 @@ function executeOpcode(
   };
 }
 
-export function computer(
-  nums: number[],
-  input1?: number,
-  input2?: number,
-  _visualize?: (something: unknown) => void
-) {
-  nums = [...nums];
-  if (input1) {
-    nums[1] = input1;
+interface Options {
+  overrides?: Record<number, number>;
+  input?: number;
+  _visualize?: (something: unknown) => void;
+}
+
+export function computer(nums: number[] | string, options: Options = {}) {
+  if (typeof nums === "string") {
+    nums = ints(nums);
   }
 
-  if (input2) {
-    nums[2] = input2;
+  nums = [...nums];
+
+  for (const override of Object.entries(options.overrides ?? [])) {
+    nums[Number(override[0])] = override[1];
   }
+
+  const outputs: string[] = [];
 
   function readOpcode(num: number) {
     const pModes: Record<string, "position" | "immediate"> = {
       "0": "position",
       "1": "immediate",
     };
+
     const numArray = num.toString().split("");
     while (numArray.length < 5) {
       numArray.unshift("0");
@@ -301,8 +350,18 @@ export function computer(
   }
 
   let i = 0;
+  let loops = 0;
 
   while (true) {
+    loops++;
+    if (loops >= 10000) {
+      return { outputs: ["exceeded 10000 loops"] };
+    }
+
+    if (i >= nums.length) {
+      return { outputs: ["instruction pointer exceeded nums"] };
+    }
+
     const { opCode, p1Mode, p2Mode, p3Mode } = readOpcode(nums[i]);
 
     const i1 = i + 1;
@@ -317,6 +376,7 @@ export function computer(
       p1,
       p2,
       p3,
+      input: options.input ?? -1,
     });
 
     if (output === "error") {
@@ -325,13 +385,13 @@ export function computer(
     } else if (output === "break") {
       break;
     } else if (output !== undefined) {
-      console.log(output);
+      outputs.push(output.toString());
     }
 
     i = index;
   }
 
-  return nums[0];
+  return { outputs, result: nums[0] };
 }
 
 export function getCounts<T>(array: T[]): Record<string | number, number> {

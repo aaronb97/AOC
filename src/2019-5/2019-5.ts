@@ -2,10 +2,9 @@
 import { computer, ints } from "../helpers";
 
 export function part1(input: string, _visualize?: (toVis: unknown) => void) {
-  return computer(ints(input), undefined, undefined, _visualize);
+  return computer(ints(input), { _visualize, input: 1 });
 }
 
 export function part2(input: string, _visualize?: (toVis: unknown) => void) {
-  const split = input.split("\n");
-  return ints(input);
+  return computer(ints(input), { _visualize, input: 5 });
 }
