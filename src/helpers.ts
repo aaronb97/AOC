@@ -224,7 +224,6 @@ export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
 interface Params {
   p1: number;
-  immediateP1: number;
   p2: number;
   p3: number;
 }
@@ -233,28 +232,28 @@ function executeOpcode(
   opCode: number,
   nums: number[],
   index: number,
-  { p1, p2, p3, immediateP1 }: Params
+  { p1, p2, p3 }: Params
 ): { index: number; output?: string | number; detail?: string } {
   if (opCode === 1) {
-    nums[p3] = p1 + p2;
+    nums[p3] = nums[p1] + nums[p2];
 
     return { index: index + 4 };
   }
 
   if (opCode === 2) {
-    nums[p3] = p1 * p2;
+    nums[p3] = nums[p1] * nums[p2];
 
     return { index: index + 4 };
   }
 
   if (opCode === 3) {
-    nums[immediateP1] = 1;
+    nums[p1] = 1;
 
     return { index: index + 2 };
   }
 
   if (opCode === 4) {
-    return { index: index + 2, output: p1 };
+    return { index: index + 2, output: nums[p1] };
   }
 
   if (opCode === 99) {
@@ -306,13 +305,11 @@ export function computer(
   while (true) {
     const { opCode, p1Mode, p2Mode } = readOpcode(nums[i]);
 
-    const immediateP1 = nums[i + 1];
-    const immediateP2 = nums[i + 2];
-    const positionP1 = nums[immediateP1];
-    const positionP2 = nums[immediateP2];
+    const i1 = i + 1;
+    const i2 = i + 2;
 
-    const p1 = p1Mode === "immediate" ? immediateP1 : positionP1;
-    const p2 = p2Mode === "immediate" ? immediateP2 : positionP2;
+    const p1 = p1Mode === "immediate" ? i1 : nums[i1];
+    const p2 = p2Mode === "immediate" ? i2 : nums[i2];
 
     const p3 = nums[i + 3];
 
@@ -320,7 +317,6 @@ export function computer(
       p1,
       p2,
       p3,
-      immediateP1,
     });
 
     if (output === "error") {
