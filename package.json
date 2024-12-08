@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "tsnd --respawn --transpile-only --clear src/index.ts",
+    "start": "tsnd --respawn --transpile-only --inspect=4321 --clear src/index.ts",
     "generate": "tsnd src/generate.ts",
     "test": "jest --watch"
   },

@@ -17,7 +17,13 @@
       "protocol": "inspector",
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "start"]
+      "runtimeArgs": [
+        "run-script",
+        "start",
+        "--",
+        "--part=1",
+        "--files=input.txt"
+      ]
     }
   ]
 }

@@ -222,7 +222,12 @@ export const DIAG_DIRS_ONLY = [
 
 export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
-export function computer(nums: number[], input1?: number, input2?: number) {
+export function computer(
+  nums: number[],
+  input1?: number,
+  input2?: number,
+  _visualize?: (something: unknown) => void
+) {
   nums = [...nums];
   if (input1) {
     nums[1] = input1;
@@ -232,16 +237,61 @@ export function computer(nums: number[], input1?: number, input2?: number) {
     nums[2] = input2;
   }
 
-  for (let i = 0; i < nums.length; i += 4) {
-    const num1 = nums[nums[i + 1]];
-    const num2 = nums[nums[i + 2]];
+  function readOpcode(num: number) {
+    const paramModes: Record<string, "position" | "immediate"> = {
+      "0": "position",
+      "1": "immediate",
+    };
+    const numArray = num.toString().split("");
+    while (numArray.length < 5) {
+      numArray.unshift("0");
+    }
+
+    return {
+      opCode: Number(numArray[3]) * 10 + Number(numArray[4]),
+      param1Mode: paramModes[numArray[2]],
+      param2Mode: paramModes[numArray[1]],
+      param3Mode: paramModes[numArray[0]],
+    };
+  }
+
+  let i = 0;
+
+  while (true) {
+    const { opCode, param1Mode, param2Mode } = readOpcode(nums[i]);
+
+    const immediateParam1 = nums[i + 1];
+    const immediateParam2 = nums[i + 2];
+    const positionParam1 = nums[immediateParam1];
+    const positionParam2 = nums[immediateParam2];
+
+    const param3 = nums[i + 3];
+
+    const num1 = param1Mode === "position" ? nums[nums[i + 1]] : nums[i + 1];
+    const num2 = param2Mode === "position" ? nums[nums[i + 2]] : nums[i + 2];
     const storeIndex = nums[i + 3];
 
-    if (nums[i] === 1) {
+    if (opCode === 1) {
+      const num1 =
+        param1Mode === "immediate" ? immediateParam1 : positionParam1;
+      const num2 =
+        param2Mode === "immediate" ? immediateParam2 : positionParam2;
       nums[storeIndex] = num1 + num2;
-    } else if (nums[i] === 2) {
+      i += 4;
+    } else if (opCode === 2) {
+      const num1 =
+        param1Mode === "immediate" ? immediateParam1 : positionParam1;
+      const num2 =
+        param2Mode === "immediate" ? immediateParam2 : positionParam2;
       nums[storeIndex] = num1 * num2;
-    } else if (nums[i] === 99) {
+      i += 4;
+    } else if (opCode === 3) {
+      nums[param3] = 1;
+      i += 2;
+    } else if (opCode === 4) {
+      console.log("output:", nums[nums[i + 1]]);
+      i += 2;
+    } else if (opCode === 99) {
       break;
     } else {
       return -1;
