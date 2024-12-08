@@ -238,7 +238,7 @@ export function computer(
   }
 
   function readOpcode(num: number) {
-    const paramModes: Record<string, "position" | "immediate"> = {
+    const pModes: Record<string, "position" | "immediate"> = {
       "0": "position",
       "1": "immediate",
     };
@@ -249,47 +249,38 @@ export function computer(
 
     return {
       opCode: Number(numArray[3]) * 10 + Number(numArray[4]),
-      param1Mode: paramModes[numArray[2]],
-      param2Mode: paramModes[numArray[1]],
-      param3Mode: paramModes[numArray[0]],
+      p1Mode: pModes[numArray[2]],
+      p2Mode: pModes[numArray[1]],
+      p3Mode: pModes[numArray[0]],
     };
   }
 
   let i = 0;
 
   while (true) {
-    const { opCode, param1Mode, param2Mode } = readOpcode(nums[i]);
+    const { opCode, p1Mode, p2Mode } = readOpcode(nums[i]);
 
-    const immediateParam1 = nums[i + 1];
-    const immediateParam2 = nums[i + 2];
-    const positionParam1 = nums[immediateParam1];
-    const positionParam2 = nums[immediateParam2];
+    const immediateP1 = nums[i + 1];
+    const immediateP2 = nums[i + 2];
+    const positionP1 = nums[immediateP1];
+    const positionP2 = nums[immediateP2];
 
-    const param3 = nums[i + 3];
+    const p1 = p1Mode === "immediate" ? immediateP1 : positionP1;
+    const p2 = p2Mode === "immediate" ? immediateP2 : positionP2;
 
-    const num1 = param1Mode === "position" ? nums[nums[i + 1]] : nums[i + 1];
-    const num2 = param2Mode === "position" ? nums[nums[i + 2]] : nums[i + 2];
-    const storeIndex = nums[i + 3];
+    const p3 = nums[i + 3];
 
     if (opCode === 1) {
-      const num1 =
-        param1Mode === "immediate" ? immediateParam1 : positionParam1;
-      const num2 =
-        param2Mode === "immediate" ? immediateParam2 : positionParam2;
-      nums[storeIndex] = num1 + num2;
+      nums[p3] = p1 + p2;
       i += 4;
     } else if (opCode === 2) {
-      const num1 =
-        param1Mode === "immediate" ? immediateParam1 : positionParam1;
-      const num2 =
-        param2Mode === "immediate" ? immediateParam2 : positionParam2;
-      nums[storeIndex] = num1 * num2;
+      nums[p3] = p1 * p2;
       i += 4;
     } else if (opCode === 3) {
-      nums[param3] = 1;
+      nums[p3] = 1;
       i += 2;
     } else if (opCode === 4) {
-      console.log("output:", nums[nums[i + 1]]);
+      console.log("output:", p1);
       i += 2;
     } else if (opCode === 99) {
       break;
