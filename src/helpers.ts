@@ -222,6 +222,44 @@ export const DIAG_DIRS_ONLY = [
 
 export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
+interface Params {
+  nums: number[];
+  p1: number;
+  immediateP1: number;
+  p2: number;
+  p3: number;
+  index: number;
+}
+
+const opcodeMap: Record<
+  number,
+  ({ nums, p1, p2, p3, index }: Params) => number | "break" | "error"
+> = {
+  1: ({ nums, p1, p2, p3, index }) => {
+    nums[p3] = p1 + p2;
+
+    return index + 4;
+  },
+  2: ({ nums, p1, p2, p3, index }) => {
+    nums[p3] = p1 * p2;
+
+    return index + 4;
+  },
+  3: ({ nums, immediateP1, index }) => {
+    nums[immediateP1] = 1;
+
+    return index + 2;
+  },
+  4: ({ p1, index }) => {
+    console.log("output:", p1);
+
+    return index + 2;
+  },
+  99: () => {
+    return "break";
+  },
+};
+
 export function computer(
   nums: number[],
   input1?: number,
@@ -270,22 +308,17 @@ export function computer(
 
     const p3 = nums[i + 3];
 
-    if (opCode === 1) {
-      nums[p3] = p1 + p2;
-      i += 4;
-    } else if (opCode === 2) {
-      nums[p3] = p1 * p2;
-      i += 4;
-    } else if (opCode === 3) {
-      nums[p3] = 1;
-      i += 2;
-    } else if (opCode === 4) {
-      console.log("output:", p1);
-      i += 2;
-    } else if (opCode === 99) {
+    const result =
+      opcodeMap[opCode]?.({ nums, p1, p2, p3, index: i, immediateP1 }) ??
+      "error";
+
+    if (result === "error") {
+      console.log("something bad happened");
+      break;
+    } else if (result === "break") {
       break;
     } else {
-      return -1;
+      i = result;
     }
   }
 
