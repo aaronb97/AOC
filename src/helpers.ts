@@ -303,15 +303,15 @@ export function computer(
   let i = 0;
 
   while (true) {
-    const { opCode, p1Mode, p2Mode } = readOpcode(nums[i]);
+    const { opCode, p1Mode, p2Mode, p3Mode } = readOpcode(nums[i]);
 
     const i1 = i + 1;
     const i2 = i + 2;
+    const i3 = i + 3;
 
     const p1 = p1Mode === "immediate" ? i1 : nums[i1];
     const p2 = p2Mode === "immediate" ? i2 : nums[i2];
-
-    const p3 = nums[i + 3];
+    const p3 = p3Mode === "immediate" ? i3 : nums[i3];
 
     const { index, output, detail } = executeOpcode(opCode, nums, i, {
       p1,
