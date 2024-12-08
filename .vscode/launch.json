@@ -22,7 +22,7 @@
         "start",
         "--",
         "--part=1",
-        "--files=input.txt"
+        "--files=testInput.txt"
       ]
     }
   ]
