@@ -223,42 +223,50 @@ export const DIAG_DIRS_ONLY = [
 export const DIAG_DIRS = [...DIRS, ...DIAG_DIRS_ONLY];
 
 interface Params {
-  nums: number[];
   p1: number;
   immediateP1: number;
   p2: number;
   p3: number;
-  index: number;
 }
 
-const opcodeMap: Record<
-  number,
-  ({ nums, p1, p2, p3, index }: Params) => number | "break" | "error"
-> = {
-  1: ({ nums, p1, p2, p3, index }) => {
+function executeOpcode(
+  opCode: number,
+  nums: number[],
+  index: number,
+  { p1, p2, p3, immediateP1 }: Params
+): { index: number; output?: string | number; detail?: string } {
+  if (opCode === 1) {
     nums[p3] = p1 + p2;
 
-    return index + 4;
-  },
-  2: ({ nums, p1, p2, p3, index }) => {
+    return { index: index + 4 };
+  }
+
+  if (opCode === 2) {
     nums[p3] = p1 * p2;
 
-    return index + 4;
-  },
-  3: ({ nums, immediateP1, index }) => {
+    return { index: index + 4 };
+  }
+
+  if (opCode === 3) {
     nums[immediateP1] = 1;
 
-    return index + 2;
-  },
-  4: ({ p1, index }) => {
-    console.log("output:", p1);
+    return { index: index + 2 };
+  }
 
-    return index + 2;
-  },
-  99: () => {
-    return "break";
-  },
-};
+  if (opCode === 4) {
+    return { index: index + 2, output: p1 };
+  }
+
+  if (opCode === 99) {
+    return { index: -1, output: "break" };
+  }
+
+  return {
+    index: -1,
+    output: "error",
+    detail: `${opCode} is not a valid opCode`,
+  };
+}
 
 export function computer(
   nums: number[],
@@ -308,18 +316,23 @@ export function computer(
 
     const p3 = nums[i + 3];
 
-    const result =
-      opcodeMap[opCode]?.({ nums, p1, p2, p3, index: i, immediateP1 }) ??
-      "error";
+    const { index, output, detail } = executeOpcode(opCode, nums, i, {
+      p1,
+      p2,
+      p3,
+      immediateP1,
+    });
 
-    if (result === "error") {
-      console.log("something bad happened");
+    if (output === "error") {
+      console.error("error:", detail);
       break;
-    } else if (result === "break") {
+    } else if (output === "break") {
       break;
-    } else {
-      i = result;
+    } else if (output !== undefined) {
+      console.log(output);
     }
+
+    i = index;
   }
 
   return nums[0];
