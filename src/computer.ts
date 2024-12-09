@@ -12,7 +12,12 @@ function executeOpcode(
   nums: number[],
   index: number,
   { p1, p2, p3, input }: Params
-): { index: number; output?: string | number; detail?: string } {
+): {
+  index: number;
+  output?: string | number;
+  detail?: string;
+  usedInput?: boolean;
+} {
   // ADD
   if (opCode === 1) {
     nums[p3] = nums[p1] + nums[p2];
@@ -30,7 +35,7 @@ function executeOpcode(
   if (opCode === 3) {
     nums[p1] = input;
 
-    return { index: index + 2 };
+    return { index: index + 2, usedInput: true };
   }
 
   // PRINT
@@ -91,7 +96,7 @@ function executeOpcode(
 
 interface Options {
   overrides?: Record<number, number>;
-  input?: number;
+  input?: number | number[];
   _visualize?: (something: unknown) => void;
 }
 
@@ -130,6 +135,8 @@ export function computer(nums: number[] | string, options: Options = {}) {
   let i = 0;
   let loops = 0;
 
+  let inputCounter = 0;
+
   while (true) {
     loops++;
     if (loops >= 10000) {
@@ -150,12 +157,21 @@ export function computer(nums: number[] | string, options: Options = {}) {
     const p2 = p2Mode === "immediate" ? i2 : nums[i2];
     const p3 = p3Mode === "immediate" ? i3 : nums[i3];
 
-    const { index, output, detail } = executeOpcode(opCode, nums, i, {
-      p1,
-      p2,
-      p3,
-      input: options.input ?? -1,
-    });
+    const { index, output, detail, usedInput } = executeOpcode(
+      opCode,
+      nums,
+      i,
+      {
+        p1,
+        p2,
+        p3,
+        input: Array.isArray(options.input)
+          ? options.input[inputCounter]
+          : options.input ?? -1,
+      }
+    );
+
+    if (usedInput) inputCounter++;
 
     if (output === "error") {
       console.error("error:", detail);
